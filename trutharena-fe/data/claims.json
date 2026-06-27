@@ -1,0 +1,92 @@
+[
+  {
+    "id": "claim-1",
+    "title": "The Lagos State Government spent ₦10 billion renovating a single building.",
+    "text": "Viral reports on social media claim that the Lagos State Government allocated and spent over ₦10 billion (approximately $6.5 million USD) purely for the renovation of a single administrative building in the Alausa Secretariat in late 2025.",
+    "category": "Politics",
+    "status": "Pending",
+    "createdAt": "2026-06-23T23:54:41.604Z",
+    "submittedBy": "0x71C644E297676767676767676767676767676767",
+    "sourceUrls": [
+      "https://twitter.com/budgetwatch_ng/status/178923"
+    ]
+  },
+  {
+    "id": "claim-2",
+    "title": "AI models consumed more electricity than entire small nations in 2025.",
+    "text": "Multiple technology blogs and environmental reports assert that global AI training and inference workloads consumed more electricity than medium-to-small nations like Ireland or New Zealand in the full calendar year of 2025.",
+    "category": "Tech",
+    "status": "Investigating",
+    "createdAt": "2026-06-24T23:54:41.605Z",
+    "submittedBy": "0x3Ab644E121212121212121212121212121212121",
+    "sourceUrls": [
+      "https://techgreen.org/reports/ai-energy-footprint-2025"
+    ]
+  },
+  {
+    "id": "claim-3",
+    "title": "Superconductivity at room temperature was achieved under ambient pressure in June 2026.",
+    "text": "A research laboratory in Seoul published a preprint claiming they successfully synthesized a modified lead-apatite crystalline structure that exhibits superconductivity at 298 Kelvin (25°C) under standard 1 atmosphere of pressure, validated by zero-resistance tests.",
+    "category": "Science",
+    "status": "False",
+    "createdAt": "2026-06-22T23:54:41.605Z",
+    "resolvedAt": "2026-06-23T04:42:41.605Z",
+    "submittedBy": "0xF81544E434343434343434343434343434343434",
+    "sourceUrls": [
+      "https://arxiv-preview.org/pdf/2606.0123"
+    ],
+    "aiVerdict": {
+      "verdict": "False",
+      "confidence": "High",
+      "reasoning": "Comprehensive peer-review replication efforts by the Max Planck Institute and Argonne National Laboratory have thoroughly refuted these claims. The material synthesized is a semiconductor that displays high diamagnetic impurities, mimicking levitation, but lacks zero electrical resistance or a real Meissner phase under ambient pressure. No credible research body has reproduced superconductivity in this compound.",
+      "sourcesChecked": [
+        "https://nature.com/articles/d41586-026-00124-y",
+        "https://science-journal.org/physics/superconductivity-debunk-june-2026"
+      ]
+    }
+  },
+  {
+    "id": "claim-4",
+    "title": "A major US bank restricted gold withdrawals to $1,000 per day in response to liquidity concerns.",
+    "text": "Financial influencers posted videos claiming that one of the top five US commercial banking institutions quietly updated its terms of service to restrict physical gold deposit withdrawals to a maximum of $1,000 per business day due to structural reserve liquidity shortages.",
+    "category": "Finance",
+    "status": "Misleading",
+    "createdAt": "2026-06-21T23:54:41.605Z",
+    "resolvedAt": "2026-06-22T11:54:41.605Z",
+    "submittedBy": "0x9b544E55a55a55a55a55a55a55a55a55a55a55a5",
+    "sourceUrls": [
+      "https://tiktok.com/@gold_finance_truth/video/7391"
+    ],
+    "aiVerdict": {
+      "verdict": "Misleading",
+      "confidence": "Medium",
+      "reasoning": "The bank did issue a temporary cash-delivery limitation of $1,000 per customer at four regional high-density branches due to local physical cash vault transit delays. It did not restrict gold withdrawals (as commercial banks do not store physical bullion for retail cash-account customers), nor did it alter standard reserves or have any systemic liquidity concerns. Framing this routine logistic delay as a gold-related liquidity crisis is misleading.",
+      "sourcesChecked": [
+        "https://reuters.com/fact-check/us-banks-gold-withdrawals-fact-check",
+        "https://apnews.com/article/factcheck-bank-withdrawal-limits-false"
+      ]
+    }
+  },
+  {
+    "id": "claim-5",
+    "title": "NASA confirmed a near-Earth asteroid has a 12% chance of impact in late 2028.",
+    "text": "Astrophysics newsletters report that NASA's Jet Propulsion Laboratory Sentry system has logged a newly discovered 150-meter asteroid, 2026-FT9, which calculated a 12.4% probability of colliding with Earth on November 14, 2028.",
+    "category": "Science",
+    "status": "Verified",
+    "createdAt": "2026-06-20T23:54:41.605Z",
+    "resolvedAt": "2026-06-21T02:18:41.605Z",
+    "submittedBy": "0x12344E4564564564564564564564564564564564",
+    "sourceUrls": [
+      "https://nasa.gov/news/sentry/2026-ft9-tracking"
+    ],
+    "aiVerdict": {
+      "verdict": "Verified",
+      "confidence": "High",
+      "reasoning": "NASA's JPL Center for Near Earth Object Studies (CNEOS) indeed updated its Sentry Risk Table on June 10, indicating asteroid 2026-FT9 has a 1-in-8 (12.4%) calculated chance of trajectory intersection in November 2028 based on initial short-arc observations. JPL scientists emphasize that as more tracking data becomes available over the next 12 months, the uncertainty ellipse will shrink, and the calculated impact probability is highly likely to drop to zero.",
+      "sourcesChecked": [
+        "https://cneos.jpl.nasa.gov/sentry/details.html#2026FT9",
+        "https://skyandtelescope.org/astronomy-news/asteroid-2026ft9-impact-probability"
+      ]
+    }
+  }
+]

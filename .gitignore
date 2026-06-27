@@ -16,10 +16,10 @@ __pycache__/
 *.pyo
 *.pyd
 /context
-/frontend/.next
-/frontend/next-env.d.ts
-/frontend/bun.lock
-/frontend/package-lock.json
+/trutharena-fe/.next
+/trutharena-fe/next-env.d.ts
+/truth-arena-fe/bun.lock
+/truth-arena-fe/package-lock.json
 *.compiled.js
 package-lock.json
 

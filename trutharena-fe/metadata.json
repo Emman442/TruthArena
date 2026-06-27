@@ -1,0 +1,6 @@
+{
+  "name": "TruthArena",
+  "description": "A decentralized fact-checking platform powered by GenLayer Intelligent Contracts and AI validators.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

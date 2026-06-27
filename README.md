@@ -141,3 +141,4 @@ For detailed information, see our [documentation](https://docs.genlayer.com/).
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+# TruthArena

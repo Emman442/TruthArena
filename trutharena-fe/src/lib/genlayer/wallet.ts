@@ -1,18 +1,18 @@
-// "use client";
+"use client";
 
-// /**
-//  * Re-export wallet functionality from WalletProvider
-//  * This maintains backward compatibility with existing imports
-//  * All components that import from this file will now use shared context state
-//  */
-// export { useWallet, WalletProvider } from "./WalletProvider";
-// export type { WalletState } from "./WalletProvider";
+/**
+ * Re-export wallet functionality from WalletProvider
+ * This maintains backward compatibility with existing imports
+ * All components that import from this file will now use shared context state
+ */
+export { useWallet, WalletProvider } from "./WalletProvider";
+export type { WalletState } from "./WalletProvider";
 
-// /**
-//  * Utility function to format address for display
-//  * @param address - The address to format
-//  * @param maxLength - Maximum length before truncation (default: 12)
-//  */
+/**
+ * Utility function to format address for display
+ * @param address - The address to format
+ * @param maxLength - Maximum length before truncation (default: 12)
+ */
 export function formatAddress(
   address: string | null,
   maxLength: number = 12

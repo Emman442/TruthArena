@@ -6,14 +6,13 @@ import { useSubmitClaim } from "../hooks/TruthArena";
 interface SubmitClaimPageProps {
   isConnected: boolean;
   walletAddress: string;
-  onConnectClick: () => void;
+
   addToast: (msg: string, type: "success" | "error") => void;
 }
 
 export default function SubmitClaimPage({
   isConnected,
   walletAddress,
-  onConnectClick,
   addToast
 }: SubmitClaimPageProps) {
   const [title, setTitle] = useState("");
@@ -24,6 +23,7 @@ export default function SubmitClaimPage({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const { isPending: isSubmittingClaim, mutate: SubmitClaim } = useSubmitClaim()
 
+  console.log(walletAddress)
   const handleAddSource = () => {
     setSourceUrls([...sourceUrls, ""]);
   };

@@ -4,7 +4,7 @@ import { studionet } from "genlayer-js/chains";
 
 import { TransactionStatus } from "genlayer-js/types"
 import { parseEther } from "viem";
-import { Claim, FactCheckResult, UserProfile } from "@/src/types";
+import { Claim, FactCheckResult, Investigation, MarketPosition, UserProfile } from "@/src/types";
 
 
 class TruthArena {
@@ -51,7 +51,6 @@ class TruthArena {
      * @returns a user profile object with all relevant details
      */
     async CheckIfProfileExists(account_address: string): Promise<boolean> {
-
         try {
             const profile_exists: any = await this.client.readContract({
                 address: this.contractAddress,
@@ -60,7 +59,6 @@ class TruthArena {
             });
 
             return profile_exists as boolean;
-
         } catch (error) {
             console.error("Error fetching user profile:", error);
             throw new Error("Failed to check if user profile exists");
@@ -68,8 +66,7 @@ class TruthArena {
     }
 
 
-    async getUserProfile(wallet_address: string): Promise<UserProfile
-    > {
+    async getUserProfile(wallet_address: string): Promise<UserProfile> {
         try {
             const profile: any = await this.client.readContract({
                 address: this.contractAddress,
@@ -77,19 +74,14 @@ class TruthArena {
                 args: [wallet_address],
             });
 
-            console.log("profile: ", profile)
-
-
             return profile as UserProfile;
-
         } catch (error) {
             console.error("Error fetching user profile:", error);
             throw new Error("Failed to fetch user profile");
         }
     }
 
-    async getClaimById(claim_id: string): Promise<Claim
-    > {
+    async getClaimById(claim_id: string): Promise<Claim> {
         try {
             const claim: any = await this.client.readContract({
                 address: this.contractAddress,
@@ -98,7 +90,6 @@ class TruthArena {
             });
 
             return claim as Claim;
-
         } catch (error) {
             console.error("Error fetching claim:", error);
             throw new Error("Failed to fetch claim");
@@ -106,8 +97,7 @@ class TruthArena {
     }
 
 
-    async getFactCheckResult(claim_id: string): Promise<FactCheckResult
-    > {
+    async getFactCheckResult(claim_id: string): Promise<FactCheckResult> {
         try {
             const result: any = await this.client.readContract({
                 address: this.contractAddress,
@@ -116,27 +106,54 @@ class TruthArena {
             });
 
             return result as FactCheckResult;
-
         } catch (error) {
             console.error("Error fetching results:", error);
             throw new Error("Failed to fetch results");
         }
     }
 
-    async getAllClaims(): Promise<Claim[]
-    > {
+    async getAllClaims(): Promise<Claim[]> {
         try {
             const claims: any = await this.client.readContract({
                 address: this.contractAddress,
                 functionName: "get_all_claims",
             });
 
-
             return claims as Claim[];
-
         } catch (error) {
             console.error("Error fetching claims: ", error);
             throw new Error("Failed to fetch claims");
+        }
+    }
+
+    async getClaimPositions(claim_id: string): Promise<MarketPosition[]> {
+        try {
+            const positions: any = await this.client.readContract({
+                address: this.contractAddress,
+                functionName: "get_claim_positions",
+                args: [claim_id]
+            });
+
+            return positions as MarketPosition[];
+        } catch (error) {
+            console.error("Error fetching positions: ", error);
+            throw new Error("Failed to fetch positions");
+        }
+    }
+
+
+    async getClaimInvestigations(claim_id: string): Promise<Investigation[]> {
+        try {
+            const claims: any = await this.client.readContract({
+                address: this.contractAddress,
+                functionName: "get_claim_investigations",
+                args: [claim_id]
+            });
+
+            return claims as Investigation[];
+        } catch (error) {
+            console.error("Error fetching investigations: ", error);
+            throw new Error("Failed to fetch investigations");
         }
     }
 
@@ -155,8 +172,7 @@ class TruthArena {
                 status: "ACCEPTED" as any,
             });
             console.log("Receopttt", receipt)
-            return receipt as TransactionReceipt
-                ;
+            return receipt as TransactionReceipt;
         } catch (error) {
             console.error("Error creating profile:", error);
             throw new Error("Failed to create profile");
@@ -168,9 +184,8 @@ class TruthArena {
         title: string,
         claim_text: string,
         category: string,
-        source_urls: [string]
+        source_urls: string[]
     ) {
-
         await this.client.connect("studionet");
         try {
             const txHash = await this.client.writeContract({
@@ -195,7 +210,6 @@ class TruthArena {
     async investigateClaim(
         claim_id: string,
     ) {
-
         await this.client.connect("studionet");
         try {
             const txHash = await this.client.writeContract({
@@ -219,13 +233,86 @@ class TruthArena {
         }
     }
 
+    async takePosition(
+        claim_id: string,
+        position: string,
+        stake_amount: number
+    ) {
+        await this.client.connect("studionet");
+        try {
+            const txHash = await this.client.writeContract({
+                address: this.contractAddress,
+                functionName: "take_position",
+                args: [claim_id, position],
+                value: parseEther(stake_amount.toString())
+            });
+
+            const receipt = await this.client.waitForTransactionReceipt({
+                hash: txHash,
+                status: TransactionStatus.ACCEPTED,
+            });
+
+            return receipt as TransactionReceipt;
+        } catch (error) {
+            console.error("Error placing bet: ", error);
+            throw new Error("Failed to place bet");
+        }
+    }
 
 
 
+    async openTruthMarket(
+        claim_id: string,
+        deadline_seconds: number
+    ) {
+        await this.client.connect("studionet");
+        try {
+            const txHash = await this.client.writeContract({
+                address: this.contractAddress,
+                functionName: "open_truth_market",
+                args: [claim_id, deadline_seconds],
+                value: BigInt(0)
+            });
 
+            const receipt = await this.client.waitForTransactionReceipt({
+                hash: txHash,
+                status: TransactionStatus.ACCEPTED,
+            });
 
+            return receipt as TransactionReceipt;
+        } catch (error) {
+            console.error("Error opening truth market: ", error);
+            throw new Error("Failed to open truth market");
+        }
+    }
 
+    async resolveTruthMarket(
+        claim_id: string,
+    ) {
+        await this.client.connect("studionet");
+        try {
+            const txHash = await this.client.writeContract({
+                address: this.contractAddress,
+                functionName: "resolve_truth_market",
+                args: [claim_id],
+                value: BigInt(0)
+            });
+
+            const receipt = await this.client.waitForTransactionReceipt({
+                hash: txHash,
+                status: TransactionStatus.ACCEPTED,
+                retries: 60,
+                interval: 5000,
+            });
+
+            return receipt as TransactionReceipt;
+        } catch (error) {
+            console.error("Error resolving truth market: ", error);
+            throw new Error("Failed to resolve truth market");
+        }
+    }
+
+  
 }
-
 
 export default TruthArena;

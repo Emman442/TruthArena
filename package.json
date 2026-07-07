@@ -2,7 +2,9 @@
   "name": "genlayer-project",
   "type": "module",
   "private": true,
-  "workspaces": ["frontend"],
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
     "dev": "cd frontend && npm run dev",
     "build": "cd frontend && npm run build",
@@ -12,5 +14,10 @@
   },
   "devDependencies": {
     "genlayer-js": "^1.1.8"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.2.11",
+    "viem": "^2.54.6",
+    "wagmi": "^2.19.5"
   }
 }

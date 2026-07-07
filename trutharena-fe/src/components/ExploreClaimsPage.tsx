@@ -33,7 +33,7 @@ export default function ExploreClaimsPage({ claims, onNavigate, isLoading }: Exp
       result = result.filter(
         (c) =>
           c.title?.toLowerCase().includes(q) ||
-          (c.claim_text || c.text || "").toLowerCase().includes(q)
+          ( c.text || "").toLowerCase().includes(q)
       );
     }
 
@@ -49,12 +49,12 @@ export default function ExploreClaimsPage({ claims, onNavigate, isLoading }: Exp
 
     // Sorting
     if (sortBy === "Oldest") {
-      result.sort((a, b) => new Date(a.submitted_at || a.createdAt).getTime() - new Date(b.submitted_at || b.createdAt).getTime());
+      result.sort((a, b) => new Date(a.submitted_at || a.submitted_at).getTime() - new Date(b.submitted_at || b.submitted_at).getTime());
     } else if (sortBy === "Category") {
       result.sort((a, b) => (a.category || "").localeCompare(b.category || ""));
     } else {
       // Most Recent
-      result.sort((a, b) => new Date(b.submitted_at || b.createdAt).getTime() - new Date(a.submitted_at || a.createdAt).getTime());
+      result.sort((a, b) => new Date(b.submitted_at || b.submitted_at).getTime() - new Date(a.submitted_at || a.submitted_at).getTime());
     }
 
     return result;
@@ -204,9 +204,9 @@ export default function ExploreClaimsPage({ claims, onNavigate, isLoading }: Exp
       ) : paginatedClaims.length > 0 ? (
         <div id="claims-rows-list" className="flex flex-col border border-[#e5e5e5] bg-white divide-y divide-[#e5e5e5]">
           {paginatedClaims.map((claim) => {
-            const displayId = claim.claim_id || claim.id;
+            const displayId = claim.claim_id;
             const displayStatus = claim.status || "pending";
-            const displaySubmitter = claim.submitter || claim.submittedBy || "";
+            const displaySubmitter = claim.submitter|| "";
             
             return (
               <button
@@ -243,7 +243,7 @@ export default function ExploreClaimsPage({ claims, onNavigate, isLoading }: Exp
 
                 {/* View Arrow Link */}
                 <div className="md:w-32 flex-shrink-0 flex items-center justify-between md:justify-end gap-3 text-xs font-mono text-[#6b7280]">
-                  <span>{formatTimeAgo(claim.submitted_at || claim.createdAt)}</span>
+                  <span>{formatTimeAgo(claim.submitted_at)}</span>
                   <ArrowRight className="w-4 h-4 text-[#0a0a0a]" />
                 </div>
               </button>

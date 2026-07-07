@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { Shield } from "lucide-react";
 import { useCreateProfile } from "../hooks/TruthArena";
 import { toast } from "sonner";
-import { useWallets } from "@privy-io/react-auth";
 import { Input } from "./Input";
 import Modal from "./modal";
-
+import {getAddress} from "viem"
 interface ProfileSetupModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -17,12 +15,13 @@ export default function ProfileSetupModal({
     isOpen,
     onClose,
     onProfileCreated,
-    address,
+    address: LowerCaseAddress,
 }: ProfileSetupModalProps) {
     const [username, setUsername] = useState("");
     const [isCreating, setIsCreating] = useState(false);
     const createProfileMutation = useCreateProfile();
-    const { wallets } = useWallets();
+    const address = LowerCaseAddress ? getAddress(LowerCaseAddress) : "";
+    console.log("ProfileSetupModal address:", address);
 
     const handleCreateProfile = async () => {
         if (!username) return;

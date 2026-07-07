@@ -1,6 +1,6 @@
 export type Category = 'Politics' | 'Finance' | 'Health' | 'Science' | 'Tech' | 'Other';
 
-export type ClaimStatus = 'Pending' | 'Investigating' | 'Verified' | 'False' | 'Misleading' | 'Unverified';
+export type ClaimStatus = 'pending' | 'investigating' | 'verified' | 'false' | 'misleading' | 'unverified';
 
 export interface AIVerdict {
   verdict: 'Verified' | 'False' | 'Misleading' | 'Unverified';
@@ -12,14 +12,20 @@ export interface AIVerdict {
 export interface Claim {
   claim_id: string;
   title: string;
-  text: string;
+  claim_text: string;
   category: Category;
   status: ClaimStatus;
   submitted_at: string;
-  resolvedAt?: string;
+  resolved_at?: string;
   submitter: string; // wallet address
-  sourceUrls: string[];
+  source_urls: string[];
+  challenge_pool: number;
+  support_pool: number
   aiVerdict?: AIVerdict;
+  bounty_pool: number;
+  market_outcome: string;
+  market_status: string;
+  market_deadline?: number; // timestamp in milliseconds
 }
 
 export interface UserProfile {
@@ -39,4 +45,48 @@ export interface FactCheckResult {
   reasoning: string
   sources_checked: [string]
   checked_at: string
+}
+
+
+export interface BountySubmission {
+  id: string;
+  claimId: string;
+  submittedBy: string; // wallet address
+  username?: string; // custom username
+  explanation: string;
+  sourceUrls: string[];
+  score?: number; // 0-100 assigned by AI validator
+  feedback?: string; // AI feedback
+  createdAt: string;
+}
+
+export interface Investigation {
+  
+    inv_id: string
+    claim_id: string
+    investigator: string
+    summary: string
+    evidence_urls: [string]
+    methodology: string
+    status: string
+    ai_score: number
+    ai_feedback: string
+    submitted_at: string
+    payout: number
+
+}
+
+
+export interface MarketPosition{
+    position_id: string
+    claim_id: string
+    participant: string
+    position: string
+    stake_gen: number
+    resolved: boolean
+    won: boolean
+    payout: number
+    placed_at: string
+
+
 }

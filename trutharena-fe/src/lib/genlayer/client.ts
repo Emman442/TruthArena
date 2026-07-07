@@ -1,20 +1,22 @@
+"use client";
+
 import { createClient } from "genlayer-js";
 import { studionet } from "genlayer-js/chains";
 import { createWalletClient, custom, type WalletClient } from "viem";
 
 // GenLayer Network Configuration (from environment variables with fallbacks)
-export const GENLAYER_CHAIN_ID = parseInt(import.meta.env.GENLAYER_CHAIN_ID || "61999");
+export const GENLAYER_CHAIN_ID = parseInt(import.meta.env.VITE_GENLAYER_CHAIN_ID || "61999");
 export const GENLAYER_CHAIN_ID_HEX = `0x${GENLAYER_CHAIN_ID.toString(16).toUpperCase()}`;
 
 export const GENLAYER_NETWORK = {
   chainId: GENLAYER_CHAIN_ID_HEX,
-  chainName: import.meta.env.GENLAYER_CHAIN_NAME || "GenLayer Studio",
+  chainName: import.meta.env.VITE_GENLAYER_CHAIN_NAME || "GenLayer Studio",
   nativeCurrency: {
-    name: import.meta.env.GENLAYER_SYMBOL || "GEN",
-    symbol: import.meta.env.GENLAYER_SYMBOL || "GEN",
+    name: import.meta.env.VITE_GENLAYER_SYMBOL || "GEN",
+    symbol: import.meta.env.VITE_GENLAYER_SYMBOL || "GEN",
     decimals: 18,
   },
-  rpcUrls: [import.meta.env.GENLAYER_RPC_URL || "https://studio.genlayer.com/api"],
+  rpcUrls: [import.meta.env.VITE_GENLAYER_RPC_URL || "https://studio.genlayer.com/api"],
   blockExplorerUrls: [],
 };
 
@@ -37,7 +39,7 @@ declare global {
  */
 export function getStudioUrl(): string {
   return (
-    process.env.NEXT_PUBLIC_GENLAYER_RPC_URL || "https://studio.genlayer.com/api"
+    import.meta.env.VITE_GENLAYER_RPC_URL || "https://studio.genlayer.com/api"
   );
 }
 
@@ -53,6 +55,17 @@ export function getContractAddress(): string {
   return address;
 }
 
+/**
+ * Check if MetaMask is installed
+ */
+export function isMetaMaskInstalled(): boolean {
+  if (typeof window === "undefined") return false;
+  return !!window.ethereum?.isMetaMask;
+}
+
+/**
+ * Get the Ethereum provider (MetaMask)
+ */
 export function getEthereumProvider(): EthereumProvider | null {
   if (typeof window === "undefined") return null;
   return window.ethereum || null;
@@ -191,6 +204,32 @@ export async function isOnGenLayerNetwork(): Promise<boolean> {
 }
 
 /**
+ * Connect to MetaMask and ensure we're on GenLayer network
+ * @returns The connected address
+ */
+export async function connectMetaMask(): Promise<string> {
+  if (!isMetaMaskInstalled()) {
+    throw new Error("MetaMask is not installed");
+  }
+
+  // Request accounts
+  const accounts = await requestAccounts();
+
+  if (!accounts || accounts.length === 0) {
+    throw new Error("No accounts found");
+  }
+
+  // Check and switch to GenLayer network
+  const onCorrectNetwork = await isOnGenLayerNetwork();
+
+  if (!onCorrectNetwork) {
+    await switchToGenLayerNetwork();
+  }
+
+  return accounts[0];
+}
+
+/**
  * Request user to switch MetaMask account
  * Shows MetaMask account picker even if already connected
  * Uses wallet_requestPermissions to force account selection dialog
@@ -231,16 +270,34 @@ export async function switchAccount(): Promise<string> {
 }
 
 /**
+ * Create a viem wallet client from MetaMask provider
+ */
+export function createMetaMaskWalletClient(): WalletClient | null {
+  const provider = getEthereumProvider();
+
+  if (!provider) {
+    return null;
+  }
+
+  try {
+    return createWalletClient({
+      chain: studionet as any,
+      transport: custom(provider),
+    });
+  } catch (error) {
+    console.error("Error creating wallet client:", error);
+    return null;
+  }
+}
+
+/**
  * Create a GenLayer client with MetaMask account
  *
  * Note: The genlayer-js SDK doesn't directly support custom transports like viem.
  * When an address is provided, the SDK will use the window.ethereum provider
  * automatically for transaction signing via MetaMask.
  */
-export function createGenLayerClient(
-  address?: string,
-  provider?: any
-) {
+export function createGenLayerClient(address?: string) {
   const config: any = {
     chain: studionet,
   };
@@ -249,11 +306,15 @@ export function createGenLayerClient(
     config.account = address as `0x${string}`;
   }
 
-  if (provider) {
-    config.transport = custom(provider);
+  try {
+    return createClient(config);
+  } catch (error) {
+    console.error("Error creating GenLayer client:", error);
+    // Return client without account on error
+    return createClient({
+      chain: studionet,
+    });
   }
-
-  return createClient(config);
 }
 
 /**

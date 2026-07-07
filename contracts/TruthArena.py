@@ -126,7 +126,7 @@ class TruthArena(gl.Contract):
     def _only_registered(self, wallet: str) -> None:
         assert wallet in self.users, "User not registered"
 
-    # ─── User Registration ────────────────────────────────────
+
 
     @gl.public.write
     def register_user(self, username: str) -> None:
@@ -156,7 +156,6 @@ class TruthArena(gl.Contract):
     def user_exists(self, wallet: str) -> bool:
         return wallet in self.users
 
-    # ─── Phase 1: Claim Submission ────────────────────────────
 
     @gl.public.write
     def submit_claim(
@@ -212,8 +211,6 @@ class TruthArena(gl.Contract):
 
         return claim_id
 
-    # ─── Phase 1: AI Fact-Checking ────────────────────────────
-
     @gl.public.write
     def investigate_claim(self, claim_id: str) -> None:
         assert claim_id in self.claims, "Claim not found"
@@ -267,7 +264,6 @@ class TruthArena(gl.Contract):
                     "reasoning": str(parsed.get("reasoning", ""))
                 }, sort_keys=True, separators=(',', ':'))
             except:
-                # Fallback — try to extract verdict from raw text
                 lower = cleaned.lower()
                 if "false" in lower:
                     v = "false"
@@ -333,10 +329,6 @@ class TruthArena(gl.Contract):
             if verdict in ["verified", "false", "misleading"]:
                 self.users[submitter].reputation_score += i32(5)
 
-
-
-    # ─── Phase 1: Read Methods ────────────────────────────────
-
     @gl.public.view
     def get_claim(self, claim_id: str) -> Claim:
         assert claim_id in self.claims, "Claim not found"
@@ -375,8 +367,6 @@ class TruthArena(gl.Contract):
     @gl.public.view
     def get_total_claims(self) -> i32:
         return self.claim_counter
-
-    # ─── Phase 2: Investigation Bounties ─────────────────────
 
     @gl.public.write.payable
     def add_bounty(self, claim_id: str, deadline_seconds: i64) -> None:
@@ -573,8 +563,6 @@ Higher scores should reflect genuinely strong investigative work."""
             for inv_id in self.claim_investigations[claim_id]:
                 result.append(gl.storage.copy_to_memory(self.investigations[inv_id]))
         return result
-
-    # ─── Phase 3: Truth Markets ───────────────────────────────
 
     @gl.public.write
     def open_truth_market(self, claim_id: str, deadline_seconds: i64) -> None:

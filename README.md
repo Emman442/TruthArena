@@ -18,11 +18,12 @@ Traditional fact-checking is prone to centralized bias, slow turnaround times, a
 * Public claim ingestion validation pipeline (submit_claim).
 * Complete automated AI consensus engine (investigate_claim) with dynamic web context gathering.
 
+### Truth Prediction Markets (ALso Live)
+* Open decentralization staking markets allowing users to stake positions on whether a disputed public claim will resolve to "verified", "false", or "misleading".
+
 ### Phase 2: Bounty-Driven Investigative Journalism (Upcoming)
 * Financial incentives for deeper verification. Users can attach a GEN token bounty pool to critical claims to incentivize deeper human or AI investigative context.
 
-### Phase 3: Truth Prediction Markets (Upcoming)
-* Open decentralization staking markets allowing users to stake positions on whether a disputed public claim will resolve to "verified", "false", or "misleading".
 
 ## Architecture and Data Structures
 
@@ -82,4 +83,4 @@ Ensure you have the latest GenLayer toolchain binaries installed locally.
 When deploying the contract to the GenLayer ecosystem testnet, provide the initial administrator deployment account:
 
 ```bash
-genlayer deploy TruthArena.py --args '["0xYourAdminWalletAddressHere"]'
+genlayer deploy TruthArena.py --args '["0x281d6fd7DD1FBadaE1ef9874459057c70F6036ae"]'

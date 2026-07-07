@@ -227,7 +227,7 @@ class TruthArena(gl.Contract):
         category = c.category
         source_urls = list(c.source_urls)
 
-        def get_verdict() -> str:
+        def get_verdict_and_reasoning() -> str:
             fetched_sources = ""
             for url in source_urls:
                 try:
@@ -251,53 +251,63 @@ class TruthArena(gl.Contract):
     - Be decisive. Only return "unverified" if you have zero knowledge about this topic.
     - Use your training knowledge if web sources are unavailable.
 
-    Return ONLY one of these exact words:
-    verified
-    false
-    misleading
-    unverified
+    Return ONLY valid JSON, nothing else:
+    {{"verdict":"verified"|"false"|"misleading"|"unverified","reasoning":"one sentence explaining why"}}
     """
-            result = gl.nondet.exec_prompt(prompt).strip().lower().strip('"')
-            if "false" in result:
-                return "false"
-            elif "misleading" in result:
-                return "misleading"
-            elif "verified" in result and "un" not in result:
-                return "verified"
+            result = gl.nondet.exec_prompt(prompt).strip()
+            cleaned = result.replace("```json", "").replace("```", "").strip()
+            try:
+                import json as _json
+                parsed = _json.loads(cleaned)
+                verdict = parsed.get("verdict", "unverified")
+                if verdict not in ["verified", "false", "misleading", "unverified"]:
+                    verdict = "unverified"
+                return _json.dumps({
+                    "verdict": verdict,
+                    "reasoning": str(parsed.get("reasoning", ""))
+                }, sort_keys=True, separators=(',', ':'))
+            except:
+                # Fallback — try to extract verdict from raw text
+                lower = cleaned.lower()
+                if "false" in lower:
+                    v = "false"
+                elif "misleading" in lower:
+                    v = "misleading"
+                elif "verified" in lower and "un" not in lower:
+                    v = "verified"
+                else:
+                    v = "unverified"
+                import json as _json
+                return _json.dumps({
+                    "verdict": v,
+                    "reasoning": "AI validators reached consensus"
+                }, sort_keys=True, separators=(',', ':'))
+
+        raw = gl.eq_principle.prompt_non_comparative(
+            get_verdict_and_reasoning,
+            task="Fact-check a public claim and return a verdict with reasoning",
+            criteria="Return valid JSON with verdict (verified/false/misleading/unverified) and one sentence reasoning. Be decisive — only return unverified if you have zero knowledge."
+        )
+
+        try:
+            import json as _json
+            data = _json.loads(raw.strip().strip('"').replace('\\"', '"'))
+            verdict = data.get("verdict", "unverified")
+            reasoning = data.get("reasoning", "")
+        except:
+            lower = raw.lower()
+            if "false" in lower:
+                verdict = "false"
+            elif "misleading" in lower:
+                verdict = "misleading"
+            elif "verified" in lower and "un" not in lower:
+                verdict = "verified"
             else:
-                return "unverified"
+                verdict = "unverified"
+            reasoning = "AI validators reached consensus"
 
-        verdict = gl.eq_principle.prompt_non_comparative(
-            get_verdict,
-            task="Fact-check a public claim",
-            criteria="Return exactly one word: verified, false, misleading, or unverified. Use training knowledge if web sources fail. Only return unverified if you have zero knowledge."
-        )
-        verdict = verdict.strip().strip('"').lower()
-        if "false" in verdict:
-            verdict = "false"
-        elif "misleading" in verdict:
-            verdict = "misleading"
-        elif "verified" in verdict and "un" not in verdict:
-            verdict = "verified"
-        else:
+        if verdict not in ["verified", "false", "misleading", "unverified"]:
             verdict = "unverified"
-
-        # Step 2 — reasoning only, no separate consensus needed
-        def get_reasoning(v=verdict, ct=claim_text) -> str:
-            prompt = f"""A claim was fact-checked and the verdict is: {v}
-
-    Claim: "{ct}"
-
-    Write one clear sentence explaining why this verdict was reached based on your knowledge.
-    Reply with ONLY the sentence, nothing else.
-    """
-            return gl.nondet.exec_prompt(prompt).strip()
-
-        reasoning = gl.eq_principle.prompt_non_comparative(
-            get_reasoning,
-            task="Explain a fact-check verdict in one sentence",
-            criteria="One sentence explaining why the verdict was reached. Must be consistent with the verdict."
-        )
 
         sources: DynArray[str] = []
         for url in source_urls:

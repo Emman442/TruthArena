@@ -24,6 +24,7 @@ export default function ClaimDetailPage({
   const { isPending: isFetchingResults, data: FactCheckResults } = useFetchFactCheckResult(claim.claim_id)
   const { isPending: isOpeningMarket, mutate: openMarket } = useOpenTruthMarket()
 
+  console.log(FactCheckResults, "FactCheckResults")
   const { isPending: isResolvingMarket, mutate: resolveMarket } = useResolveTruthMarket();
     const { data: claimPositions } = useFetchClaimPositions(claim.claim_id);
   const handleCopy = () => {
@@ -287,7 +288,7 @@ export default function ClaimDetailPage({
                 <button
                   id="trigger-investigation-btn"
                   onClick={handleInvestigateClaim}
-                  disabled={isTriggerDisabled}
+                  disabled={isTriggerDisabled || isInvestigatingClaim}
                   className="w-full py-3 bg-[#0a0a0a] text-white font-mono text-xs font-bold hover:opacity-95 transition-opacity disabled:opacity-50"
                 >
                   {isInvestigatingClaim ? "Submitting to GenLayer..." : "Trigger Investigation"}
